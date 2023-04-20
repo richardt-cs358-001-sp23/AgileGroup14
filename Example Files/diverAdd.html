@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h1>Divers</h1>
+<p class="divertable"></p>
+<script>
+$.ajax({
+method: "POST",
+url: "diverPDO.php"
+})
+.done(function( response ) {
+    $("p.divertable").html(response);
+  });
+</script>
+<br>
+
+<form method="post" action="diverAdd.php">
+New Diver Name: <input name="diverName" type="text" > <input type=submit name="Add Diver"  >
+</form>
+
+<div id="result"></div>
+<body>
+<html>
