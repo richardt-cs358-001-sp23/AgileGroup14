@@ -1,6 +1,10 @@
 <?php
 echo "<table style='border: solid 1px black;'>";
-echo "<tr><th>FullName</th></tr>";
+echo "<tr>
+	<th>ID</th>
+    	<th>Firstname</th>
+   	<th>Lastname</th>
+	<th>Email</th></tr>";
 
 class TableRows extends RecursiveIteratorIterator {
     function __construct($it) {
@@ -8,7 +12,7 @@ class TableRows extends RecursiveIteratorIterator {
     }
 
     function current() {
-        return "<td style='width:150px;border:1px solid black;'>" . parent::current(). "</td>";
+        return "<td>" . parent::current(). "</td>";
     }
 
     function beginChildren() {
@@ -28,7 +32,7 @@ $dbname = "AgileExpG3";
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("SELECT firstName, lastName FROM student;");
+    $stmt = $conn->prepare("SELECT studentId, firstName, lastName, email FROM student;");
     $stmt->execute();
 
     // set the resulting array to associative

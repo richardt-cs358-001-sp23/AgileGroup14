@@ -1,30 +1,68 @@
-
 <!doctype html>
 <html>
-<body>
-<body style="background-color:yellow;">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<head>
+		<title>Capstone Evaluation</title>
+		<style>
 
-<h1>Add Student .html</h1>
-<p class="studenttable"></p>
+			body {
+				max-width: 80%;
+				margin: auto;
+			}
+			h1   {
 
-<script>
-$.ajax({
-method: "POST",
-url: "studentPDO.php"
-})
-.done(function( response ) {
-    $("p.studenttable").html(response);
-  });
-</script>
+				padding: 10px;
+				text-align: center;
+				color: white;
+				background-color: #13294b;
+			}
+			#fileSelect {
+				max-width: 80%;
+				margin: auto;
 
-<p>Click on the "Choose File" button to upload a file:</p>
-<form action="studentAdd2.php">
-  <input type="file" id="myFile" name="filename">
-  <br>
-  <input type="submit">
-</form>
+			}
+			table {
+  				font-family: arial, sans-serif;
+  				border-collapse: collapse;
+  				width: 100%;
+			}
 
-<div id="result"></div>
-</body>
+			td, th {
+  				border: 1px solid #dddddd;
+  				text-align: left;
+  				padding: 8px;
+			}
+
+				tr:nth-child(even) {
+  				background-color: #dddddd;
+			}		
+
+	</style>
+	</head>
+	<body>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<h1>UW-Stout Capstone Evaluation</h1>
+
+		<div id="fileSelect">
+			<h3>Select file to display:</h3>
+			<form action="studentAdd2.php" enctype="multipart/form-data" method="post">
+				<input type="file" id="myFile" name="filename">
+				<input type="submit">
+			</form>
+		</div>
+
+
+		<p class="studenttable"></p>
+
+		<script>
+			$.ajax({
+			method: "POST",
+			url: "studentPDO.php"
+			})
+			.done(function( response ) {
+				$("p.studenttable").html(response);
+			  });
+		</script>
+		
+	</body>
 </html>
