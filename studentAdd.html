@@ -1,0 +1,30 @@
+
+<!doctype html>
+<html>
+<body>
+<body style="background-color:yellow;">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<h1>Add Student .html</h1>
+<p class="studenttable"></p>
+
+<script>
+$.ajax({
+method: "POST",
+url: "studentPDO.php"
+})
+.done(function( response ) {
+    $("p.studenttable").html(response);
+  });
+</script>
+
+<p>Click on the "Choose File" button to upload a file:</p>
+<form action="studentAdd2.php">
+  <input type="file" id="myFile" name="filename">
+  <br>
+  <input type="submit">
+</form>
+
+<div id="result"></div>
+</body>
+</html>
