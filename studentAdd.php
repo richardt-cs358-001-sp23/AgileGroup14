@@ -1,45 +1,51 @@
-<?php
-$servername = "localhost";
-$username = "user3";
-$password = "pwd14";
-$dbname = "AgileExpG3"; 
+<?php 
+$servername = "localhost"; 
+$username = "admin3"; 
+$password = "mild14reach"; 
+$dbname = "AgileExpG3";
+$data = array();
 
 try {
-    $students_file = $_POST['studentsFile'];
-    // Splitting of file migth change based on format of file
-    $rows = explode("\n", $students_file);
-    // Getting rid of the first row (the format row)
-    array_shift($rows)
+    $studentsFile = $_FILES['filename']['tmp_name'];
+    // Prepare the sql 
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password); 
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+    // change to correct table and columns when those are created 
+    // not sure about inserting id yet have to deal with duplicates (insert might just deal with it) 
+    $insertStudent = $conn->prepare("INSERT INTO student (firstName, lastName, email) VALUES (:firstName, :lastName, :email);"); 
+    //$connectWorksOn = $conn->prepare("INSERT INTO worksOn (projectId, studentId) VALUES (:projectId, :studentId);");
 
-    // Prepare the sql
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // change to correct table and columns when those are created
-    // not sure about inserting id yet have to deal with duplicates (insert might just deal with it)
-    $insertStudent = $conn->prepare("INSERT INTO student (studentId, firstName, lastName, email) VALUES (?, ?, ?, ?);");
-    $connectWorksOn = $conn->prepare("INSERT INTO student (projectId, studentId) VALUES (?, ?);");
-
-    // Split up the file into an array of students
-    $students = array()
-    foreach($rows as $row => $data)
+    // Splitting of file might change based on format of file 
+    if (($open = fopen($studentsFile, "r")) !== FALSE) 
     {
-        $row_data = explode(",", $data);
-        $student[$row]['projectId'] = $row_data[0];
-        $student[$row]['studentId'] = $row_data[1];
-        $student[$row]['firstname'] = $row_data[2];
-        $student[$row]['lastname']  = $row_data[3];
-        $student[$row]['email']     = $row_data[4];
+        fgetcsv($open, 1000, ",");
+        while (($data = fgetcsv($open, 1000, ",")) !== FALSE) 
+        {        
+            $insertStudent->bindParam(':firstName', $data[2], PDO::PARAM_STR, strlen($data[2]));
+            $insertStudent->bindParam(':lastName', $data[3], PDO::PARAM_STR, strlen($data[3]));
+            $insertStudent->bindParam(':email', $data[4], PDO::PARAM_STR, strlen($data[4]));
 
-        $insertStudent->bind_param("isss", $student[$row]['studentId'], $student[$row]['firstname'], $student[$row]['lastName'], $student[$row]['email']);
-        $connectWorksOn->bind_param("ii", $student[$row]['projectId'], $student[$row]['studentId']);
-        $insertStudent->execute();
-        $connectWorksOn->execute();
+            $insertStudent->execute();
+
+            //$connectWorksOn->bind_param("ii", $row_data[0], $row_data[1]);
+            //$connectWorksOn->execute();
+        }
+    
+        fclose($open);
     }
-}
-catch(PDOException $e) {
+    else
+    {
+        echo "Failed to open file";
+        echo "Filename = $studentsFile";
+	print_r($_FILES);
+    }
+
+} 
+catch(PDOException $e) { 
     echo "Error: " . $e->getMessage();
-}
-$conn = null;
-header('Location: studentAdd.html');
-?>
+    echo "\n";
+    print_r($_FILES);
+    print_r($data);
+} 
+$conn = null; 
+header('Location: studentAdd.html'); ?>
