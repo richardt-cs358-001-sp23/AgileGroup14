@@ -8,6 +8,7 @@ try {
     $students_file = $_POST['studentsFile'];
     // Splitting of file migth change based on format of file
     $rows = explode("\n", $students_file);
+    // Getting rid of the first row (the format row)
     array_shift($rows)
 
     // Prepare the sql
@@ -16,7 +17,8 @@ try {
 
     // change to correct table and columns when those are created
     // not sure about inserting id yet have to deal with duplicates (insert might just deal with it)
-    $statement = $conn->prepare("INSERT INTO student (projectId, studentId, firstName, lastName, email) VALUES (?, ?, ?, ?, ?);");
+    $insertStudent = $conn->prepare("INSERT INTO student (studentId, firstName, lastName, email) VALUES (?, ?, ?, ?);");
+    $connectWorksOn = $conn->prepare("INSERT INTO student (projectId, studentId) VALUES (?, ?);");
 
     // Split up the file into an array of students
     $students = array()
@@ -29,8 +31,10 @@ try {
         $student[$row]['lastname']  = $row_data[3];
         $student[$row]['email']     = $row_data[4];
 
-        $statement->bind_param("iisss", $student[$row]['projectId'], $student[$row]['studentId'], $student[$row]['firstname'], $student[$row]['lastName'], $student[$row]['email']);
-        $statement->execute();
+        $insertStudent->bind_param("isss", $student[$row]['studentId'], $student[$row]['firstname'], $student[$row]['lastName'], $student[$row]['email']);
+        $connectWorksOn->bind_param("ii", $student[$row]['projectId'], $student[$row]['studentId']);
+        $insertStudent->execute();
+        $connectWorksOn->execute();
     }
 }
 catch(PDOException $e) {
